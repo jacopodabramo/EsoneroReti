@@ -52,8 +52,8 @@ int main(int argc,char *argv[]) {
    	// user value in the comand line
 
    	if (argc > 1) {
-    	sad.sin_addr.s_addr = inet_addr( argv[0]);
-    	sad.sin_port = htons((int)argv[1]);
+    	sad.sin_addr.s_addr = inet_addr( argv[1]);
+    	sad.sin_port = htons((int)argv[2]);
     }
 
 
