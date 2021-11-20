@@ -22,6 +22,7 @@
 
 int checkOp(char);
 int check(char[], struct Operation*);
+int check2(char[], struct Operation *);
 
 int main(int argc, char *argv[]) {
 
@@ -178,4 +179,37 @@ int check(char in[], struct Operation *op){
     return 1;
 
 
+}
+
+
+int check2(char in[], struct Operation *op) {
+	if(checkOp(in[0]) == 1 && in[1] ==' '){
+		op->op = in[0];
+	}else if(in[0] == '=' && strlen(in) == 1){
+		op->op = in[0];
+		return 1;
+	}
+	else return 0;// false
+	int k = 0;
+	int i = 2;
+	while(k<2){
+		int j = 0;
+		char num[10];
+		while(isdigit(in[i])){
+			num[j] = in[i];
+			j++;
+			i++;
+		}
+		num[j] = '\0';
+
+		if(in[i] == ' ' || i == strlen(in) - 1){
+			if(k == 0){
+				op->number1 = atoi(num);
+				i++;
+			}else op->number2 = atoi(num);
+		}else return 0;
+		k++;
+	}
+	if(i == strlen(in) -1) return 1;
+	else return 0;
 }
