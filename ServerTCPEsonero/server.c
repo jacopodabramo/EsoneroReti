@@ -16,9 +16,8 @@
 #include "protocol.h"
 
 int main(int argc,char *argv[]) {
-    //...
+
 #if defined WIN32
-    // Initialize Winsock
     WSADATA wsa_data;
     int result = WSAStartup(MAKEWORD(2,2), &wsa_data);
     if (result != NO_ERROR) {

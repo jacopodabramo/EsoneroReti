@@ -24,7 +24,7 @@ void errorhandler(char *errorMessage) {
 	printf("%s", errorMessage);
 }
 
-int divis(int a,int b){
+int division(int a,int b){
 	return a/b;
 }
 
@@ -32,7 +32,7 @@ int add(int a,int b) {
 	return a+b;
 }
 
-int mul(int a,int b) {
+int mult(int a,int b) {
 	return a*b;
 }
 
@@ -48,10 +48,10 @@ int calculator(struct Operation op){
 		return sub(op.number1,op.number2);
 	}
 	if(op.op == 'x') {
-		return mul(op.number1,op.number2);
+		return mult(op.number1,op.number2);
 	}
 	if(op.op == '/') {
-		return divis(op.number1,op.number2);
+		return division(op.number1,op.number2);
 	}
 	return 0;
 }
