@@ -12,16 +12,16 @@
 #endif
 
 #include "protocol.h"
+#include <string.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#define BUFFERSIZE 512
-#define PROTOPORT 27015
 
-#define NO_ERROR 0
-
+//Prototypes
 int checkOp(char);
+
 int check(char[], struct Operation*);
+
 int check2(char[], struct Operation *);
 
 int main(int argc, char *argv[]) {
@@ -37,30 +37,39 @@ int main(int argc, char *argv[]) {
 
   #endif
 
-     //Variables initalization
+     //Connection variables initialization
      int c_socket;
      struct sockaddr_in sad;
      int bytes_rcvd;
      int total_bytes_rcvd = 0;
      int bytes = 0;
      memset(&sad, 0, sizeof(sad));
+
+     //message to Server variables initialization
      struct Operation msg;
      char message[30];
 
 
      //socket creation
-    c_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if(c_socket<0){
+     c_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+     if(c_socket<0){
         errorhandler("socket creation failed \n");
         closesocket(c_socket);
         clearwinsock();
         return -1;
-    }
-
+     }
 
     sad.sin_family = AF_INET;
-    sad.sin_addr.s_addr = inet_addr( "127.0.0.1");
-    sad.sin_port = htons(27015);
+    if(argc > 1){
+    	//command line values
+    	sad.sin_addr.s_addr = inet_addr(argv[1]);
+    	sad.sin_port = htons(atoi(argv[2]));
+    }
+    else{
+    	//default values
+    	sad.sin_addr.s_addr = inet_addr("127.0.0.1");
+    	sad.sin_port = htons(PROTOPORT);
+    }
 
     //server connection
     if(connect(c_socket, (struct sockaddr *)&sad, sizeof(sad))<0){
@@ -70,36 +79,38 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-
     while(1){
+    	//getting operation
     	do {
-
-    		printf("Inserire una stringa nel formato:[operazione] [operando 1] [operando 2] \n");
+    		printf("Enter a command in a format:[operation] [first operate] [second operate] \n");
     		fgets(message,sizeof(message),stdin);
+    	} while (check2(message,&msg) == 0);
 
-    	} while (check(message,&msg) == 0);
-
-    	if(checkOp(msg.op)){
-    		printf("Operando uno = %d",msg.number1);
-    		printf(" Operando due = %d ",msg.number2);
+    	if(checkOp(msg.op)) {
+    		printf("first operator = %d\n", msg.number1);
+    		printf("second operator  = %d\n", msg.number2);
     	}
+
+    	//sending data to server
     	bytes = (int)sizeof(struct Operation);
-    	if(send(c_socket, (struct Operation*)&msg, bytes, 0) < 0){
-               errorhandler("send() sent a different number of bytes");
+    	if(send(c_socket, (char*)(struct Operation*)&msg, bytes, 0) < 0){
+               errorhandler("send() sent a different number of bytes\n");
                closesocket(c_socket);
                clearwinsock();
                return -1;
         }
 
-    	if(msg.op == EQUAL) break;
+    	//stop connection
+    	if(msg.op == '=') break;
 
     	// result
     	int a;
 
+    	//receiving data from server
     	total_bytes_rcvd = 0;
     	while(total_bytes_rcvd < sizeof(int)){
-            if((bytes_rcvd = recv(c_socket, (int*)&a, (int) sizeof(int), 0))<=0){
-                errorhandler("recv() failed or connection closed prematurely");
+            if((bytes_rcvd = recv(c_socket,(char *) (int*)&a, (int) sizeof(int), 0))<=0){
+                errorhandler("recv() failed or connection closed prematurely\n");
                 closesocket(c_socket);
                 clearwinsock();
                 return -1;
@@ -107,7 +118,7 @@ int main(int argc, char *argv[]) {
             total_bytes_rcvd += bytes_rcvd;
         }
 
-    	printf("Risultato = %d\n",a);
+    	printf("result = %d\n",a);
     }
 
     printf("Closing connection ...");
@@ -116,12 +127,26 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-
+/*
+ * Parameters:
+ *             a: character
+ * Return:
+ *             integer: 1 if input is an operation,
+ *                      0 otherwise
+ */
 int checkOp(char a){
     if(a == '+' ||  a == 'x' || a == '/' ||  a == '-') return 1;
     return 0;
 }
 
+/*
+ * Parameters:
+ *             in: User's message
+ *             op: mapping user's message to operation struct
+ * Return:
+ *             integer: 1 if user's message is valid
+ *                      0 otherwise
+ */
 int check(char in[], struct Operation *op){
     int i;
     int k = 0;
@@ -181,11 +206,18 @@ int check(char in[], struct Operation *op){
 
 }
 
-
+/*
+ * Parameters:
+ *             in: User's message
+ *             op: mapping user's message to operation struct
+ * Return:
+ *             integer: 1 if user's message is valid
+ *                      0 otherwise
+ */
 int check2(char in[], struct Operation *op) {
-	if(checkOp(in[0]) == 1 && in[1] ==' '){
+	if(checkOp(in[0]) == 1 && in[1] == ' '){
 		op->op = in[0];
-	}else if(in[0] == '=' && strlen(in) == 1){
+	}else if(in[0] == '=' && strlen(in) == 2){
 		op->op = in[0];
 		return 1;
 	}

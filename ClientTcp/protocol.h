@@ -4,19 +4,12 @@
 #define BUFFERSIZE 512
 #define PROTOPORT 27015
 #define NO_ERROR 0
-#define PLUS '+'
-#define MINUS '-'
-#define MULTIPLY 'x'
-#define DIVISION '/'
-#define EQUAL '='
-
 
 struct Operation {
 	char op;
 	int number1;
 	int number2;
 };
-
 
 
 // functions
@@ -29,7 +22,5 @@ void clearwinsock() {
 void errorhandler(char *errorMessage) {
 	printf("%s", errorMessage);
 }
-
-
 
 #endif /* PROTOCOL_H_ */

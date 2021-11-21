@@ -12,25 +12,34 @@
 #endif
 
 #include <stdio.h>
-#include<string.h>
+#include <string.h>
 #include "protocol.h"
 
+//Prototypes
 int calculator(struct Operation);
+
 int sub(int,int);
+
 int mult(int,int);
+
 int add(int,int);
+
 int division(int,int);
 
 int main(int argc,char *argv[]) {
 
-#if defined WIN32
+  #if defined WIN32
+
     WSADATA wsa_data;
     int result = WSAStartup(MAKEWORD(2,2), &wsa_data);
     if (result != NO_ERROR) {
         printf("Error at WSAStartup()\n");
         return 0;
     }
-#endif
+
+  #endif
+
+    //Connection variables initialization
     int my_socket;
     struct sockaddr_in sad;
     int qlen = 5; // max number of clients
@@ -40,28 +49,28 @@ int main(int argc,char *argv[]) {
     int bytes_rcvd;
     int total_bytes_rcvd = 0;
 
+    //message to client variable initialization
+    struct Operation op;
 
+    //socket creation
     my_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if(my_socket< 0) {
         errorhandler("socket creation failed \n");
         return -1;
     }
 
-
-
     sad.sin_family = AF_INET;
-    // Default value
-    sad.sin_addr.s_addr = inet_addr( "127.0.0.1" );
-   	sad.sin_port = htons( PROTOPORT );
-
-   	// user value in the comand line
-
    	if (argc > 1) {
     	sad.sin_addr.s_addr = inet_addr( argv[1]);
-    	sad.sin_port = htons((int)argv[2]);
+    	sad.sin_port = htons(atoi(argv[2]));
     }
 
+   	else {
+    	sad.sin_addr.s_addr = inet_addr( "127.0.0.1" );
+    	sad.sin_port = htons( PROTOPORT );
+    }
 
+   	//binding
     if(bind( my_socket , (struct sockaddr *) &sad, sizeof (sad))<0){
         errorhandler(("bind() failed \n"));
         closesocket(my_socket);
@@ -75,23 +84,24 @@ int main(int argc,char *argv[]) {
     }
 
     while(1){
+
     	printf("Waiting for a client to connect...");
     	client_len = sizeof(cad);
     	if((client_socket=accept(my_socket, (struct sockaddr *) &cad, &client_len))<0){
-          errorhandler("accept() failed \n");
-          closesocket(my_socket);
-          clearwinsock();
-          return -1;
+            errorhandler("accept() failed \n");
+            closesocket(my_socket);
+            clearwinsock();
+            return -1;
         }
 
     	printf("Connection established with %s:%d", inet_ntoa(cad.sin_addr),sad.sin_port);
 
-    	// sending and receving data
     	while(1){
-    	// Receving operartion
     		total_bytes_rcvd = 0;
-    		struct Operation op;
-    		if((bytes_rcvd = recv(client_socket,(struct Operation*)&op, sizeof(struct Operation), 0)) <= 0){
+
+
+    		//receiving data from client
+    		if((bytes_rcvd = recv(client_socket,(char*)(struct Operation*)&op, sizeof(struct Operation), 0)) <= 0){
     			errorhandler("recv() failed or connection closed prematurely");
     			closesocket(client_socket);
     			clearwinsock();
@@ -100,50 +110,77 @@ int main(int argc,char *argv[]) {
 
     		total_bytes_rcvd += bytes_rcvd;
 
-    		// Closing socket if the clent sends "="
     		if(op.op == '=') {
     			printf("\n");
     			break;
     		} else {
 
-    			// Calculating the result
-    			int result = calculator(op);
+    		    // Calculating the result
+    		    int result = calculator(op);
 
-    			// Sending result
-    			if(send(client_socket, (int*)&result, sizeof(int), 0) < 0){
+    		     // Sending result
+    		     if(send(client_socket,(char*)(int*)&result, sizeof(int), 0) < 0){
     				errorhandler("send() sent a different number of bytes");
     				closesocket(client_socket);
     				clearwinsock();
     				return -1;
-    			}
-    		}
-    	}
-   }
-
-
+    		     }
+    	     }
+        }
+    }
 
     closesocket(my_socket);
     clearwinsock();
     system("pause");
     return 0;
-} // main end
+}
 
+/*
+ * Parameters:
+ *           a,b: operators
+ * Return:
+ *           integer: result of division
+ */
 int division(int a,int b){
 	return a/b;
 }
 
+/*
+ * Parameters:
+ *           a,b: operators
+ * Return:
+ *           integer: result of addition
+ */
 int add(int a,int b) {
 	return a+b;
 }
 
+/*
+ * Parameters:
+ *           a,b: operators
+ * Return:
+ *           integer: result of multiplication
+ */
 int mult(int a,int b) {
 	return a*b;
 }
 
+/*
+ * Parameters:
+ *           a,b: operators
+ * Return:
+ *           integer: result of subtraction
+ */
 int sub(int a,int b) {
 	return a-b;
 }
 
+/*
+ * Parameters:
+ *           op: struct
+ * Return:
+ *           integer: parsing operation and getting result
+ */
 int calculator(struct Operation op){
 	if(op.op == '+') {
 		return add(op.number1,op.number2);
