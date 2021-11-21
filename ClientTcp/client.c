@@ -24,6 +24,8 @@ int check(char[], struct Operation*);
 
 int check2(char[], struct Operation *);
 
+void printMessage(int);
+
 int main(int argc, char *argv[]) {
 
   #if defined WIN32
@@ -79,11 +81,14 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+    printf("List of operation: \n+ addition \n- subtraction \nx moltiplication \n/ division \n\n");
     while(1){
     	//getting operation
+    	int k = 0;
     	do {
-    		printf("Enter a command in a format:[operation] [first operate] [second operate] \n");
+    		printMessage(k);
     		fgets(message,sizeof(message),stdin);
+    		k = 1;
     	} while (check2(message,&msg) == 0);
 
     	if(checkOp(msg.op)) {
@@ -118,7 +123,11 @@ int main(int argc, char *argv[]) {
             total_bytes_rcvd += bytes_rcvd;
         }
 
-    	printf("result = %d\n",a);
+    	if(msg.op == '/' && a == INT_MAX) {
+    		printf("Error division by zero\n");
+    	} else {
+    		printf("result = %d\n",a);
+    	}
     }
 
     printf("Closing connection ...");
@@ -244,4 +253,19 @@ int check2(char in[], struct Operation *op) {
 	}
 	if(i == strlen(in) -1) return 1;
 	else return 0;
+}
+
+/*
+ * Parameters:
+ *             integer:k value to understand which kind of message should be printed
+ *
+ * Return:
+ *             void function, it prints the message
+ */
+void printMessage(int k){
+	if(k == 0) {
+		printf("Enter a command in a format:[operation] [first operate] [second operate] \n");
+	} else {
+		printf("The command doesn't exist, the format is:[operation] [first operate] [second operate] \n");
+	}
 }

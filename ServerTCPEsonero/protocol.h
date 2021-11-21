@@ -4,6 +4,7 @@
 #define BUFFERSIZE 512
 #define PROTOPORT 27015
 #define NO_ERROR 0
+#include"limits.h"
 
 struct Operation {
 	char op;

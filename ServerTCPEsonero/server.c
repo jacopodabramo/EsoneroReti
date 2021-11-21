@@ -142,6 +142,7 @@ int main(int argc,char *argv[]) {
  *           integer: result of division
  */
 int division(int a,int b){
+	if(b == 0) return INT_MAX;
 	return a/b;
 }
 
