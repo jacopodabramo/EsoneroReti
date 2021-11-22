@@ -16,15 +16,15 @@
 #include "protocol.h"
 
 //Prototypes
-int calculator(struct Operation);
+float calculator(struct Operation);
 
-int sub(int,int);
+float sub(int,int);
 
-int mult(int,int);
+float mult(int,int);
 
-int add(int,int);
+float add(int,int);
 
-int division(int,int);
+float division(int,int);
 
 int main(int argc,char *argv[]) {
 
@@ -116,10 +116,10 @@ int main(int argc,char *argv[]) {
     		} else {
 
     		    // Calculating the result
-    		    int result = calculator(op);
+    		    float result = calculator(op);
 
     		     // Sending result
-    		     if(send(client_socket,(char*)(int*)&result, sizeof(int), 0) < 0){
+    		     if(send(client_socket,(char*)(float*)&result, sizeof(float), 0) < 0){
     				errorhandler("send() sent a different number of bytes");
     				closesocket(client_socket);
     				clearwinsock();
@@ -139,20 +139,22 @@ int main(int argc,char *argv[]) {
  * Parameters:
  *           a,b: operators
  * Return:
- *           integer: result of division
+ *           float: result of division
  */
-int division(int a,int b){
-	if(b == 0) return INT_MAX;
-	return a/b;
+float division(int a,int b){
+	if(b == 0) return FLT_MAX  ;
+	float toTfloata = (float)a;
+	float toTfloatb = (float)b;
+	return toTfloata/toTfloatb;
 }
 
 /*
  * Parameters:
  *           a,b: operators
  * Return:
- *           integer: result of addition
+ *           float: result of addition
  */
-int add(int a,int b) {
+float add(int a,int b) {
 	return a+b;
 }
 
@@ -160,9 +162,9 @@ int add(int a,int b) {
  * Parameters:
  *           a,b: operators
  * Return:
- *           integer: result of multiplication
+ *           float: result of multiplication
  */
-int mult(int a,int b) {
+float mult(int a,int b) {
 	return a*b;
 }
 
@@ -170,9 +172,9 @@ int mult(int a,int b) {
  * Parameters:
  *           a,b: operators
  * Return:
- *           integer: result of subtraction
+ *           float: result of subtraction
  */
-int sub(int a,int b) {
+float sub(int a,int b) {
 	return a-b;
 }
 
@@ -180,9 +182,9 @@ int sub(int a,int b) {
  * Parameters:
  *           op: struct
  * Return:
- *           integer: parsing operation and getting result
+ *           float: parsing operation and getting result
  */
-int calculator(struct Operation op){
+float calculator(struct Operation op){
 	if(op.op == '+') {
 		return add(op.number1,op.number2);
 	}

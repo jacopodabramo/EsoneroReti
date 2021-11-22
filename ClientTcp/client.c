@@ -109,12 +109,12 @@ int main(int argc, char *argv[]) {
     	if(msg.op == '=') break;
 
     	// result
-    	int a;
+    	float a;
 
     	//receiving data from server
     	total_bytes_rcvd = 0;
-    	while(total_bytes_rcvd < sizeof(int)){
-            if((bytes_rcvd = recv(c_socket,(char *) (int*)&a, (int) sizeof(int), 0))<=0){
+    	while(total_bytes_rcvd < sizeof(float)){
+            if((bytes_rcvd = recv(c_socket,(char *) (float*)&a, (float) sizeof(float), 0))<=0){
                 errorhandler("recv() failed or connection closed prematurely\n");
                 closesocket(c_socket);
                 clearwinsock();
@@ -123,10 +123,10 @@ int main(int argc, char *argv[]) {
             total_bytes_rcvd += bytes_rcvd;
         }
 
-    	if(msg.op == '/' && a == INT_MAX) {
+    	if(msg.op == '/' && a == FLT_MAX  ) {
     		printf("Error division by zero\n");
     	} else {
-    		printf("result = %d\n",a);
+    		printf("result = %f\n",a);
     	}
     }
 
