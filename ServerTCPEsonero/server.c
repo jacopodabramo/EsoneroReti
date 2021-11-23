@@ -85,7 +85,7 @@ int main(int argc,char *argv[]) {
 
     while(1){
 
-    	printf("Waiting for a client to connect...");
+    	printf("Waiting for a client to connect...\n");
     	client_len = sizeof(cad);
     	if((client_socket=accept(my_socket, (struct sockaddr *) &cad, &client_len))<0){
             errorhandler("accept() failed \n");
@@ -102,10 +102,38 @@ int main(int argc,char *argv[]) {
 
     		//receiving data from client
     		if((bytes_rcvd = recv(client_socket,(char*)(struct Operation*)&op, sizeof(struct Operation), 0)) <= 0){
-    			errorhandler("recv() failed or connection closed prematurely");
+    			errorhandler("recv() failed or connection closed prematurely\n");
     			closesocket(client_socket);
     			clearwinsock();
-    			return -1;
+    			result = WSAStartup(MAKEWORD(2,2), &wsa_data);
+    			    			    if (result != NO_ERROR) {
+    			    			        printf("Error at WSAStartup()\n");
+    			    			        return 0;
+    			    			    }
+    			    			    my_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    			    			        if(my_socket< 0) {
+    			    			            errorhandler("socket creation failed \n");
+    			    			            return -1;
+    			    			        }
+
+    			    			        sad.sin_family = AF_INET;
+    			    			        	sad.sin_addr.s_addr = inet_addr( "127.0.0.1" );
+    			    			        	sad.sin_port = htons( PROTOPORT );
+
+    			    			       	//binding
+    			    			        if(bind( my_socket , (struct sockaddr *) &sad, sizeof (sad))<0){
+    			    			            errorhandler(("bind() failed \n"));
+    			    			            closesocket(my_socket);
+    			    			            return -1;
+    			    			        }
+
+    			    			        if(listen(my_socket, qlen) < 0){
+    			    			            errorhandler("listen() failed \n");
+    			    			            closesocket(my_socket);
+    			    			            return -1;
+    			    			        }
+    			    			        break;
+
     		}
 
     		total_bytes_rcvd += bytes_rcvd;
