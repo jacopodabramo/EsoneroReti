@@ -20,9 +20,7 @@
 //Prototypes
 int checkOp(char);
 
-int check(char[], struct Operation*);
-
-int check2(char[], struct Operation *);
+int check(char[], struct Operation *);
 
 void printMessage(int);
 
@@ -89,7 +87,7 @@ int main(int argc, char *argv[]) {
     		printMessage(k);
     		fgets(message,sizeof(message),stdin);
     		k = 1;
-    	} while (check2(message,&msg) == 0);
+    	} while (check(message,&msg) == 0);
 
     	if(checkOp(msg.op)) {
     		printf("first operator = %d\n", msg.number1);
@@ -156,74 +154,7 @@ int checkOp(char a){
  *             integer: 1 if user's message is valid
  *                      0 otherwise
  */
-int check(char in[], struct Operation *op){
-    int i;
-    int k = 0;
-    for(i = 0; i < strlen(in); i++){
-        if(in[i] == ' ') continue;
-        else if(in[i] == '='){
-            k = 3;
-            op->op  = in[i];
-            i++;
-            break;
-        }
-        else if(checkOp(in[i]) == 1){
-            op->op  = in[i];
-            break;
-        }
-        else return 0; // false
-    }
-
-    while(k < 2) {
-    // removing space
-    for(int j = i + 1;j < strlen(in); j++){
-        if(in[j] == ' ') continue;
-        else if(isdigit(in[j])){
-            i = j;
-            break;
-        } else return 0; // false
-    }
-
-    // checking number
-    char num[10];
-    int t = 0;
-    for(int j = i;j < strlen(in); j++){
-            if(isdigit(in[j])) {
-                num[t] = in[j];
-                t++;
-                continue;
-            }
-            else if(in[j] == ' ' || j == strlen(in) - 1){
-                num[t] = '\0';
-                i = j;
-                if( k == 0) op->number1 = atoi(num);
-                else op->number2 = atoi(num);
-                break;
-            } else return 0;
-        }
-
-    if(i > strlen(in)) return 0; // false
-    k++;
-    }
-
-    // no chararcters after second number
-    for(int j = i; j < strlen(in) - 1; j++){
-        if(in[j] != ' ') return 0;
-    }
-    return 1;
-
-
-}
-
-/*
- * Parameters:
- *             in: User's message
- *             op: mapping user's message to operation struct
- * Return:
- *             integer: 1 if user's message is valid
- *                      0 otherwise
- */
-int check2(char in[], struct Operation *op) {
+int check(char in[], struct Operation *op) {
 	if(checkOp(in[0]) == 1 && in[1] == ' '){
 		op->op = in[0];
 	}else if(in[0] == '=' && strlen(in) == 2){

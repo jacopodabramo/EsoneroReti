@@ -184,7 +184,16 @@ float calculator(struct Operation op){
 	}
 	return 0;
 }
-
+/*
+ * Parameters:
+ * 			my_socket: identify Server Socket
+ * 			sad: struct to create the connection
+ * 			argv: main parameters
+ 	 	 	argc: number of main parameters
+ 	Return:
+ 			integer:  1 if the connection is established correctly
+ 				 	 -1 otherwise
+ */
 int initializeConnection(int* my_socket, struct sockaddr_in *sad,int* qlen,char* argv[],int argc){
 	*my_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if(my_socket< 0) {
