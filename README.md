@@ -24,4 +24,4 @@ Per il controllo della stringa inserita dall'utente si è deciso che la stringa 
 ## Autori
 L'esonero è stato realizzato da:
 - Lorenzo Cassano (matricola 718331)
-- Jacopo D'Abramo (matricola ...)
+- Jacopo D'Abramo (matricola 716484)
