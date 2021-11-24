@@ -19,10 +19,12 @@ _All' avvio_, sia al Client che al Server possono essere passati dei parametri d
 Per il controllo della stringa inserita dall'utente, si è deciso, come da requisiti, che la stringa verrà ritenuta corretta esclusivamente nel seguente formato:<br> 
 <p align = "center"><code>[Operazione][Spazio][Primo operando][Spazio][Secondo operando]</code> </p> 
 <br>
+
 _Esempi di stringhe accettate_:
 - <code>+ 10 20</code>
 - <code>x -10 20</code>
 - <code>- -10 -20</code><br>
+
 _Esempi di stringhe non accettate:_ 
 - <code>++ 10 20</code>
 - <code>+ 10 20aaa</code>
