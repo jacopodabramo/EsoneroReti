@@ -142,6 +142,11 @@ int check(char in[], struct Operation *op) {
 	while(k<2){
 		int j = 0;
 		char num[10];
+		if(in[i] == '-'){
+			num[j] = in[i];
+			j++;
+			i++;
+		}
 		while(isdigit(in[i])){
 			num[j] = in[i];
 			j++;
