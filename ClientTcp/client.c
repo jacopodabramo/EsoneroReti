@@ -54,15 +54,17 @@ int main(int argc, char *argv[]) {
 
      if(clientConnection(&c_socket,&sad,argv,argc) != 1 ) return -1;
 
-    printf("List of operation: \n+ addition \n- subtraction \nx moltiplication \n/ division \n\n");
+    printf("Client-Server Calculator \n");
+    printf("You can insert the numbers in the range [-10.000;10.000] \n");
+    printf("List of operation: \n+ addition \n- subtraction \nx moltiplication \n/ division\n= closing connection\n\n");
     while(1){
     	//getting operation
-    	int k = 0;
+    	int k = 1;
     	do {
     		printMessage(k);
     		fgets(message,sizeof(message),stdin);
-    		k = 1;
-    	} while (check(message,&msg) == 0);
+    		k = check(message,&msg);
+    	} while (k != 1);
 
     	if(checkOp(msg.op)) {
     		printf("first operator = %d\n", msg.number1);
@@ -162,8 +164,11 @@ int check(char in[], struct Operation *op) {
 		}else return 0;
 		k++;
 	}
-	if(i == strlen(in) -1) return 1;
-	else return 0;
+	if(i == strlen(in) -1){
+		if((op->number1 > 10000 || op->number1 < -10000)||(op->number2 > 10000 || op->number2 < -10000)){
+			return -1;
+		} else return 1;
+	}else return 0;
 }
 
 /*
@@ -174,9 +179,12 @@ int check(char in[], struct Operation *op) {
  *             void function, it prints the message
  */
 void printMessage(int k){
-	if(k == 0) {
+	if(k == 1) {
 		printf("Enter a command in a format:[operation] [first operate] [second operate] \n");
-	} else {
+	} else if(k == -1){
+		printf("The numbers are not in the range. The range is between -10.000 and 10.000\n");
+		printf("Enter a command in a format:[operation] [first operate] [second operate] \n");
+	}else{
 		printf("The command doesn't exist, the format is:[operation] [first operate] [second operate] \n");
 	}
 }
