@@ -24,6 +24,4 @@ void errorhandler(char *errorMessage) {
 	printf("%s", errorMessage);
 }
 
-
-
 #endif /* PROTOCOL_H_ */

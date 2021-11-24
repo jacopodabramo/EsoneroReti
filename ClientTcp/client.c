@@ -24,6 +24,8 @@ int check(char[], struct Operation *);
 
 void printMessage(int);
 
+int clientConnection(int* c_socket,struct sockaddr_in *sad,char* argv[],int argc);
+
 int main(int argc, char *argv[]) {
 
   #if defined WIN32
@@ -50,34 +52,7 @@ int main(int argc, char *argv[]) {
      char message[30];
 
 
-     //socket creation
-     c_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-     if(c_socket<0){
-        errorhandler("socket creation failed \n");
-        closesocket(c_socket);
-        clearwinsock();
-        return -1;
-     }
-
-    sad.sin_family = AF_INET;
-    if(argc > 1){
-    	//command line values
-    	sad.sin_addr.s_addr = inet_addr(argv[1]);
-    	sad.sin_port = htons(atoi(argv[2]));
-    }
-    else{
-    	//default values
-    	sad.sin_addr.s_addr = inet_addr("127.0.0.1");
-    	sad.sin_port = htons(PROTOPORT);
-    }
-
-    //server connection
-    if(connect(c_socket, (struct sockaddr *)&sad, sizeof(sad))<0){
-        errorhandler("Failed to connect \n");
-        closesocket(c_socket);
-        clearwinsock();
-        return -1;
-    }
+     if(clientConnection(&c_socket,&sad,argv,argc) != 1 ) return -1;
 
     printf("List of operation: \n+ addition \n- subtraction \nx moltiplication \n/ division \n\n");
     while(1){
@@ -199,4 +174,46 @@ void printMessage(int k){
 	} else {
 		printf("The command doesn't exist, the format is:[operation] [first operate] [second operate] \n");
 	}
+}
+
+/*
+ * Parameters:
+ * 			c_socket: identify Client Socket
+ * 			sad: struct to create the connection
+ * 			argv: main parameters
+ 	 	 	argc: number of main parameters
+ 	Return:
+ 			integer:  1 if the connection is established correctly
+ 				 	 -1 otherwise
+ */
+int clientConnection(int* c_socket,struct sockaddr_in *sad,char* argv[],int argc){
+	*c_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+	     if(*c_socket<0){
+	        errorhandler("socket creation failed \n");
+	        closesocket(*c_socket);
+	        clearwinsock();
+	        return -1;
+	     }
+
+	    sad->sin_family = AF_INET;
+	    if(argc > 1){
+	    	//command line values
+	    	sad->sin_addr.s_addr = inet_addr(argv[1]);
+	    	sad->sin_port = htons(atoi(argv[2]));
+	    }
+	    else{
+	    	//default values
+	    	sad->sin_addr.s_addr = inet_addr("127.0.0.1");
+	    	sad->sin_port = htons(PROTOPORT);
+	    }
+
+	    //server connection
+	    if(connect(*c_socket, (struct sockaddr *)sad, sizeof(*sad))<0){
+	        errorhandler("Failed to connect \n");
+	        closesocket(*c_socket);
+	        clearwinsock();
+	        return -1;
+	    }
+	    return 1;
+
 }

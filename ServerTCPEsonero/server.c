@@ -172,12 +172,15 @@ float calculator(struct Operation op){
 	}
 	return 0;
 }
+
+
 /*
  * Parameters:
  * 			my_socket: identify Server Socket
  * 			sad: struct to create the connection
  * 			argv: main parameters
  	 	 	argc: number of main parameters
+ 	 	 	qlen:max number of clients in queue
  	Return:
  			integer:  1 if the connection is established correctly
  				 	 -1 otherwise
@@ -214,3 +217,4 @@ int initializeConnection(int* my_socket, struct sockaddr_in *sad,int* qlen,char*
 	   }
 	   return 1;
 }
+
