@@ -1,6 +1,6 @@
 # Documentazione
- Repository riguardante la prima parte dell'esonero(protocollo TCP) di reti.<br>
- Il software realizzato riguarda un'applicazione Client/Server, dove il server è una calcolatrice capace di effettuare operazioni di somma, sottrazione, moltiplicazione e divisione tra numeri interi; mentre il Client si occupa di inviare i dati dell'operazione al Server.<br>
+Repository riguardante la prima parte dell'esonero (protocollo TCP) dell'esame di reti di calcolatori.<br>
+Il software realizzato è un'applicazione Client/Server, in cui il server è una calcolatrice capace di effettuare operazioni di somma, sottrazione, moltiplicazione e divisione tra numeri interi; mentre il Client si occupa di inviare la stringa contenente l'operazione e gli operandi, oppurtunamente  al Server.<br>
  
  ## Spiegazione di alcune scelte
 Visto che la calcolatrice effettua operazione fra numeri interi, si è deciso di gestire il risultati delle operazioni attraverso numeri reali _(float)_. <br>
@@ -24,4 +24,4 @@ Per il controllo della stringa inserita dall'utente si è deciso che la stringa 
 ## Autori
 L'esonero è stato realizzato da:
 - Lorenzo Cassano (matricola 718331)
-- Jacopo D'Abramo (matricola ...)
+- Jacopo D'Abramo (matricola 716484)
