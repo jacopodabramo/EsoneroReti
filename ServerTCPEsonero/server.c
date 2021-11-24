@@ -78,19 +78,7 @@ int main(int argc,char *argv[]) {
     		if((bytes_rcvd = recv(client_socket,(char*)(struct Operation*)&op, sizeof(struct Operation), 0)) <= 0){
     			errorhandler("\nrecv() failed or connection closed prematurely\n");
     			closesocket(client_socket);
-    			clearwinsock();
-    			result = WSAStartup(MAKEWORD(2,2), &wsa_data);
-    			if (result != NO_ERROR) {
-    			   printf("Error at WSAStartup()\n");
-    			   return 0;
-    			   }
-
-    			if(initializeConnection(&my_socket,&sad,&qlen,argv,argc) == 1) {
-    				break;
-    			} else { // failed
-    				return -1;
-    			}
-
+    			break;
     		}
 
     		total_bytes_rcvd += bytes_rcvd;
