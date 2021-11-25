@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
      if(clientConnection(&c_socket,&sad,argv,argc) != 1 ) return -1;
 
     printf("Client-Server Calculator \n");
-    printf("You can insert the numbers in the range [-10.000;10.000] \n");
+    printf("You can insert numbers in the range [-10.000;10.000] \n");
     printf("List of operation: \n+ addition \n- subtraction \nx moltiplication \n/ division\n= closing connection\n\n");
     while(1){
     	//getting operation
@@ -129,6 +129,7 @@ int checkOp(char a){
  *             op: mapping user's message to operation struct
  * Return:
  *             integer: 1 if user's message is valid
+ *             			-1 if the numbers are not in the range
  *                      0 otherwise
  */
 int check(char in[], struct Operation *op) {
